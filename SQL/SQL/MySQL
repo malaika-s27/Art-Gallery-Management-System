@@ -1,0 +1,425 @@
+-- TABLE LOGIN
+CREATE TABLE login(
+id INT AUTO_INCREMENT PRIMARY KEY,
+email VARCHAR (40) NOT NULL UNIQUE,
+password VARCHAR (100),
+usertype varchar(10)
+);
+
+SELECT * FROM exhibition WHERE START_DATE > NOW();
+select * from artwork;
+select * from artworkreviews;
+SELECT * FROM customer c join login l on c.id=l.id;
+SELECT * FROM admin a join login l on a.email=l.email;
+SELECT * FROM artists ar join login l on ar.id=l.id;
+
+-- Manual insertions for Admin
+INSERT INTO login (email, password, usertype) VALUES('hafsahabib87@gmail.com', 'Hafsa12#', 'Admin');
+INSERT INTO login (email, password, usertype) VALUES('malaikasohail132@gmail.com', 'malaika12#', 'Admin');
+SELECT * FROM ARTISTS JOIN LOGIN ON ARTISTS.ID=LOGIN.ID;
+-- VIEW LOGIN TABLE DATA
+SELECT * FROM login;
+
+-- Check constraint on usertype
+ALTER TABLE login
+ADD CONSTRAINT CHK_USERTYPE CHECK (USERTYPE IN ('User', 'Artist', 'Admin'));
+
+
+-- CUSOTMER TABLE
+CREATE TABLE CUSTOMER (
+id INT ,
+CUSTOMERNAME VARCHAR(40),
+PHONENUM varchar(11),
+ADDRESS VARCHAR(50));
+
+-- FOREIGN KEY LOGIN ID
+ALTER TABLE CUSTOMER
+ADD CONSTRAINT FK_CUSTOMER FOREIGN KEY (id) REFERENCES login(id);
+
+-- VIEW CUSTOMER DATA
+select * from customer C JOIN LOGIN ON C.id = login.id;
+
+
+-- STORED PROCEDURE FOR SIGNUP 
+DELIMITER //
+CREATE PROCEDURE SignUpProcedure(
+    IN p_email VARCHAR(40),
+    IN p_usertype VARCHAR(10),
+    IN p_password VARCHAR(100),
+    IN p_name VARCHAR(40),
+    IN p_phone VARCHAR(11),
+    IN p_address VARCHAR(50)
+)
+BEGIN
+    DECLARE new_id INT;
+
+    -- Password complexity checks (DOMAIN)
+    IF LENGTH(p_password) < 8
+        OR p_password NOT REGEXP '[A-Z]'
+        OR p_password NOT REGEXP '[0-9]'
+        OR p_password NOT REGEXP '[^a-zA-Z0-9]' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Invalid password format, include an uppercase, a number, and a special character';
+    END IF;
+
+    -- Insert into login table
+    INSERT INTO login (email, usertype, password)
+    VALUES (p_email, p_usertype, p_password);
+
+    -- Get the automatically generated ID from login table
+    SET new_id = LAST_INSERT_ID();
+
+    -- Insert into the suitable user type table
+    IF p_usertype = 'User' THEN
+        INSERT INTO customer (id, CUSTOMERNAME, PHONENUM, ADDRESS)
+        VALUES (new_id, p_name, p_phone, p_address);
+
+    ELSEIF p_usertype = 'Artist' THEN
+        INSERT INTO artists (id, name, address, phone)
+        VALUES (new_id, p_name, p_address, p_phone);
+
+    -- Add additional conditions for other user types if needed
+
+    ELSE
+        -- Handle other cases if necessary
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid usertype';
+    END IF;
+END;
+ //
+DELIMITER ;
+
+
+-- TABLE ARTSITS
+CREATE TABLE artists(
+id INT,
+name varchar(100),
+address VARCHAR(20), 
+phone VARCHAR(11)
+);
+
+-- ADD FOREIGN KEY (LOGIN ID)
+ALTER TABLE ARTISTS
+ADD CONSTRAINT FK_ARTISTS FOREIGN KEY (id) REFERENCES login(id);
+
+-- VIEW ARTIST DATA
+SELECT * FROM artists INNER JOIN LOGIN ON artists.id=login.id WHERE email= login.email;
+-- ADD NAME AS A PRIMARY KEY, TO ENSURE THE ARTWORK IS NOT COPIED
+ALTER TABLE ARTISTS
+ADD CONSTRAINT PK_ARTISTS primary key (name); 
+
+
+-- TABLE ARTWORK
+CREATE TABLE artwork(
+Title VARCHAR(100) ,
+year year,
+url VARCHAR(10000),
+category VARCHAR(100),
+description VARCHAR(100)
+);
+
+-- ADD COLUMN FOR PRICE
+ALTER TABLE ARTWORK
+ADD COLUMN PRICE VARCHAR(20) NOT NULL;
+
+-- ADD COLUMN AFTER TABLE IS DEFINED
+ALTER TABLE artwork
+ADD COLUMN ArtistName VARCHAR(100);
+
+-- ARTIST NAME AS FOREIGN KEY
+ALTER TABLE ARTWORK
+ADD CONSTRAINT FK_2ARTWORK FOREIGN KEY(ArtistName) references ARTISTS(name);
+
+-- Add the composite primary key constraint
+ALTER TABLE artwork
+ADD CONSTRAINT PK_Artwork PRIMARY KEY (Title);
+
+-- foreign key category from art category table
+ALTER TABLE artwork
+ADD CONSTRAINT FK_Artwork FOREIGN KEY (category) REFERENCES ARTCATEGORY (category);
+
+-- SAMPLE INSERTION
+INSERT INTO ARTWORK VALUES( 'Color Symphony ', '2020', 'http://localhost:6775/DBSProject/bg1.jpg','Sculpture','Monet captures the mirrored reflections of his garden through his distinctive brushstrokes'   );
+
+-- UPDATE ARTIST NAME (GIVES EERROR IF THE ARTIST NOT IN DATABASE NAME IS ENTERED)
+update artwork set ArtistName='Monet' WHERE Title='Sculpture Gallery'; 
+update artwork set ArtistName='ZileHuma' WHERE Title='The Bare Bears'; 
+update artwork set ArtistName='Maira Waheed' WHERE Title='The Ascent'; 
+
+-- VIEW THE TABLE
+SELECT * FROM ARTWORK;
+
+-- ART CATEGORY TABLE
+CREATE TABLE artcategory(
+Title VARCHAR(50),
+category VARCHAR(30) PRIMARY KEY
+);
+
+-- FOREIGN KEY (TITLE ARTWORK)
+ALTER TABLE ARTCATEGORY
+ADD CONSTRAINT FK_ART foreign key (Title) REFERENCES artwork(Title);
+
+-- VIEW THE VALID ARTWORKS (BASED ON CATEGORY)
+SELECT * FROM ARTCATEGORY at  INNER JOIN  ARTWOrk a on at.category= a.category;
+
+-- EXHIBITIION TABLE
+CREATE TABLE EXHIBITION(
+E_ID INT ,
+E_TYPE VARCHAR(20),
+E_NAME VARCHAR(20),
+LOCATION VARCHAR(30),
+START_DATE DATETIME,
+END_DATE date,
+DESCRIPTION VARCHAR(50)
+);
+-- PRIMARY KEY EXHIBITION ID
+ALTER TABLE EXHIBITION 
+ADD CONSTRAINT PK_EXHIBITION  PRIMARY KEY (E_ID);
+
+-- SAMPLE INSERTIONS
+INSERT INTO EXHIBITION (E_ID, E_TYPE, E_NAME, LOCATION, START_DATE, END_DATE, DESCRIPTION)
+VALUES
+  (1, 'Art', 'Spring Exhibition', 'Gallery A', '2024-04-01 10:00:00', '2024-04-15', 'A showcase of spring-themed artworks'),
+  (2, 'Photography', 'Cityscapes', 'Museum B', '2024-01-01 10:00:00', '2024-01-20', 'Exploring the beauty of city landscapes'),
+  (3, 'Sculpture', 'Modern Sculptures', 'Art Center', '2023-12-26 12:00:00', '2023-01-01', 'Contemporary sculptures by various artists');
+
+-- VIEW UPCOMING EXHIBITIONS
+Select * from Exhibition order by Start_Date;
+SELECT * FROM Exhibition WHERE END_DATE > NOW() ;
+
+-- SAMPLE INSERTION
+INSERT INTO exhibition (E_ID,E_TYPE, E_NAME, LOCATION, START_DATE, END_DATE, DESCRIPTION)
+VALUES
+(4,'Food', 'International Fair', 'City Square', '2024-1-15 12:00:00', '2024-11-18', 'A culinary journey with diversity.');
+
+-- ADMIN TABLE 
+CREATE TABLE ADMIN(
+email VARCHAR(40) primary KEY,
+name varchar(100),
+address VARCHAR(20), 
+phone VARCHAR(11)
+  );
+ALTER TABLE ADMIN
+ADD CONSTRAINT FK_ADMIN FOREIGN KEY (EMAIL) REFERENCES LOGIN (EMAIL);
+-- INSERTION OF ADIM DIRECTLY FROM DATABASE
+INSERT INTO ADMIN ( EMAIL,NAME, ADDRESS, PHONE) VALUES('hafsahabib87@gmail.com','HAFSA HABIB', 'ISLAMABAD', '03075361156');
+INSERT INTO ADMIN (EMAIL,NAME, ADDRESS, PHONE) VALUES('malaikasohail132@gmail.com','MALAIKA SOHAIL', 'RAWALPINDI', '03005113296');
+-- VIEW THE ADMIN DETAILS
+SELECT * FROM ADMIN INNER JOIN LOGIN ON ADMIN.EMAIL=LOGIN.EMAIL ;
+
+
+-- PROCEDURE FOR UPDATING ADMIN INFORMATION IN DASHBOARD
+DELIMITER //
+
+CREATE PROCEDURE UpdateAdminInformation(
+    IN p_email VARCHAR(40),
+    IN p_name VARCHAR(100),
+    IN p_address VARCHAR(20),
+    IN p_phone VARCHAR(11),
+    IN p_password VARCHAR(100)
+)
+BEGIN
+    -- Declare a variable to store the user_id
+    DECLARE user_id INT;
+
+    -- Find the user_id based on the provided email
+    SELECT user_id INTO user_id FROM login WHERE email = p_email;
+
+    -- Update information in the login table
+    UPDATE login
+    SET
+        email = p_email,
+        password = p_password
+    WHERE email = p_email;
+
+    -- Update information in the ADMIN table
+    UPDATE ADMIN
+    SET
+        name = p_name,
+        address = p_address,
+        phone = p_phone
+    WHERE EMAIL = P_EMAIL;
+END //
+
+DELIMITER ;
+
+-- Call the procedure with sample values
+CALL UpdateAdminInformation('hafsahabib87@gmail.com','HAFSA HABIB', 'ISLAMABAD', '03075361156', 'HAFSA12#');
+select * from login join admin on login.email=admin.email;
+-- TABLE FOR GALLERY
+CREATE TABLE GALLERY(
+G_ID INT(10) PRIMARY KEY,
+G_NAME VARCHAR(30),
+LOCATION VARCHAR(40)
+);
+-- Inserting data into GALLERY table
+INSERT INTO GALLERY (G_ID, G_NAME, LOCATION) VALUES
+(1, 'Frere Halls', 'Karachi'),
+(2, 'Gallery 6', 'Pakistan');
+
+-- Table to represent the many-to-many relationship between gallery and exhibition
+CREATE TABLE GALLERY_EXHIBITION (
+    G_ID INT,
+    E_ID INT,
+    PRIMARY KEY (G_ID, E_ID),
+    FOREIGN KEY (G_ID) REFERENCES GALLERY(G_ID),
+    FOREIGN KEY (E_ID) REFERENCES EXHIBITION(E_ID)
+);
+-- Inserting data into GALLERY_EXHIBITION table to associate galleries with exhibitions
+INSERT INTO GALLERY_EXHIBITION (G_ID, E_ID) VALUES
+(1, 1), -- SAMPLE INSERTION
+(1, 2), 
+(2, 1); 
+
+-- VIEW THE EXHIBITIONS IN INDIVIDUAL GALLERIES
+CREATE VIEW GalleryExhibitionView AS
+SELECT G.G_ID, G.G_NAME, G.LOCATION, E.E_ID, E.E_NAME, E.START_DATE
+FROM GALLERY G
+JOIN GALLERY_EXHIBITION GE ON G.G_ID = GE.G_ID
+JOIN EXHIBITION E ON GE.E_ID = E.E_ID;
+-- EXECUTE VIEW
+SELECT * FROM GalleryExhibitionView;
+
+-- REGISTRATION TABLE
+CREATE TABLE REGISTRATION (
+-- ID AUTOMATICALLY DECIDED BY DATABASE
+    REGISTRATION_ID INT PRIMARY KEY AUTO_INCREMENT,
+    E_ID INT, -- EXHIBITION ID
+    G_ID INT, -- GALLERY ID
+    EMAIL VARCHAR(40), -- USER EMAIL
+   	FOREIGN KEY (EMAIL) REFERENCES LOGIN(EMAIL),
+	FOREIGN KEY (E_ID) REFERENCES EXHIBITION(E_ID),
+    FOREIGN KEY (G_ID) REFERENCES GALLERY(G_ID));
+
+-- SAMPLE INSERTION WITH A VALID EMAIL
+INSERT INTO REGISTRATION (E_ID, G_ID, EMAIL)
+VALUES (1, 1, 'john@example.com');
+-- SELECT FROM TABLE
+SELECT * FROM REGISTRATION;
+-- CHECK CONSTRAINT TO PREVENT NULL EMAIL REGISTRATION
+ALTER TABLE registration
+ADD CONSTRAINT CHK_REG CHECK (EMAIL IS NOT NULL);
+-- UNIQUE CONSTRAINT TO PREVENT DUPLICATE REGISTRATION
+ALTER TABLE REGISTRATION
+ADD CONSTRAINT UNIQUE_REG unique (EMAIL);
+
+-- VIEW THE REGISTRATIONS FOR EXHIBITIONS
+CREATE VIEW RegistrationDetailView AS
+SELECT
+    R.REGISTRATION_ID,
+    R.E_ID,
+    R.G_ID,
+    L.EMAIL,
+    L.USERTYPE,
+    CASE
+        WHEN L.USERTYPE = 'User' THEN C.CUSTOMERNAME
+        WHEN L.USERTYPE = 'Artist' THEN A.NAME
+        -- Add additional conditions for other user types if needed
+        ELSE NULL
+    END AS USERNAME,
+    CASE
+        WHEN L.USERTYPE = 'User' THEN C.PHONENUM
+        WHEN L.USERTYPE = 'Artist' THEN A.PHONE
+        -- Add additional conditions for other user types if needed
+        ELSE NULL
+    END AS PHONE,
+    E.E_NAME,
+    G.G_NAME
+FROM
+    REGISTRATION R
+JOIN LOGIN L ON R.EMAIL = L.EMAIL
+LEFT JOIN CUSTOMER C ON L.ID = C.ID AND L.USERTYPE = 'User'
+LEFT JOIN ARTISTS A ON L.ID = A.ID AND L.USERTYPE = 'Artist'
+JOIN EXHIBITION E ON R.E_ID = E.E_ID
+JOIN GALLERY G ON R.G_ID = G.G_ID;
+
+SELECT * FROM RegistrationDetailView;
+ 
+-- Trigger to prevent insertion of an already existing Artwork.
+DELIMITER //
+CREATE TRIGGER before_artwork_insert
+BEFORE INSERT ON artwork
+FOR EACH ROW
+BEGIN
+    DECLARE artwork_count INT;
+
+    -- Check if the artwork title already exists
+    SELECT COUNT(*) INTO artwork_count
+    FROM artwork
+    WHERE title = NEW.title;
+
+    -- If the title already exists, prevent the insertion
+    IF artwork_count > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Artwork with this title already exists';
+    END IF;
+END;
+//
+DELIMITER ;
+select * from artwork;
+select * from admin join login on admin.email= login.email;
+
+-- TABLE FOR REVIEW
+CREATE TABLE ArtworkReviews (
+    Email VARCHAR (30) PRIMARY KEY ,
+    Title VARCHAR(100)  NOT NULL,
+    ReviewText TEXT NOT NULL,
+    CONSTRAINT FK_ArtworkReviews FOREIGN KEY (Title)
+        REFERENCES Artwork(Title) -- Replace 'Artworks' with the actual name of your artworks table
+);
+ALTER TABLE ARTWORKREVIEWS 
+ADD COLUMN EMAIL VARCHAR(30);
+select * from artworkreviews;
+insert into ARTWORKREVIEWS (Title, ReviewText) VALUES ('Sculpture Gallery', 'so beuatiful');
+
+DELIMITER //
+
+
+
+
+CREATE PROCEDURE UpdateArtistInformation(
+    IN p_id INT,
+    IN p_name VARCHAR(100),
+    IN p_address VARCHAR(20),
+    IN p_phone VARCHAR(11),
+    IN p_email VARCHAR(40),
+    IN p_password VARCHAR(100)
+)
+BEGIN
+    -- Update information in the artists table
+    UPDATE artists
+    SET
+        name = p_name,
+        address = p_address,
+        phone = p_phone
+    WHERE id = p_id;
+
+    -- Update information in the login table
+    UPDATE login
+    SET
+        email = p_email,
+        password = p_password
+    WHERE email = p_email;
+END //
+
+DELIMITER ;
+call UpdateArtistInformation(31, 'MONET', 'abc street1', '03002145', 'monet12@email.com','MONET12#');
+
+
+drop procedure UpdateArtistInformation;
+SELECT *
+FROM artists
+JOIN login ON artists.id = login.id;
+
+CREATE VIEW ArtistLoginView AS
+SELECT
+    artists.id AS artist_id,
+    artists.name AS artist_name,
+    artists.address AS artist_address,
+    artists.phone AS artist_phone,
+    login.id AS login_id,
+    login.email AS login_email,
+    login.password AS login_password
+FROM artists
+JOIN login ON artists.id = login.id;
+
+SELECT * FROM ArtistLoginView;
