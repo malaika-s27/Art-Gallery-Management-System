@@ -1,0 +1,151 @@
+ @charset "ISO-8859-1";
+body {			font-family: 'Times', sans-serif;
+
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: rgb(128, 0, 0);
+            padding: 10px;
+            font-family: 'Times', sans-serif;
+            text-align: center;
+        }
+
+        .navbar a {
+			font-family: 'Times', sans-serif;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px;
+            margin: 0 10px;
+            font-weight: bold;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .nav a:hover {
+            color: #ddd;
+        }
+
+        .line {
+            margin-top: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .black-line {
+            width: 50%;
+            border: 1px solid rgb(128, 0, 0);
+        }
+
+        .artwork {
+            display: flex;
+            justify-content: center;
+        }
+
+        .box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .card {
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            transition: transform 0.3s ease-in-out;
+            max-width: 300px;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+/*/        .image {
+            overflow: hidden;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .image img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px 5px 0 0;
+        }
+*/
+     .image {
+            margin-top: 20px;
+        }
+
+        .image img {
+            max-width: 300px; /* Adjust the width as needed */
+            height: 200px;
+            display: block; /* To prevent unwanted space under the image */
+            margin-bottom: 10px;
+        }
+        .text {
+            padding: 15px;
+        }
+
+        h3 {
+            color: rgb(128, 0, 0);
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .cta1 {
+            display: block;
+            text-align: center;
+            text-decoration: none;  
+            color: #fff;
+            background-color: #800000;
+            padding: 8px 16px;
+            border-radius: 5px;
+            margin-bottom: 2px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .cta1:hover {
+            background-color: #400D19;
+        }
+
+       .search-bar {
+    text-align: center;
+    margin: 10px; /* Adjust this value to add space */
+}
+
+
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid rgb(128, 0, 0);
+            border-radius: 5px;
+            width: 100%; /* Updated width to be responsive */
+            max-width: 300px; /* Added max-width for better mobile experience */
+            margin-right: 10px;
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: rgb(128, 0, 0);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .footer {
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+
+        button[type="submit"]:hover {
+            background-color: #400D19;
+        }

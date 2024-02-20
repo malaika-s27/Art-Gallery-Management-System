@@ -1,0 +1,226 @@
+@charset "ISO-8859-1";
+ body {
+    display: flex;
+}
+.dashboard-container {
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    width:auto;
+}
+
+section.main-content {
+    padding: 20px;
+}
+  .primary-text {
+    color: var(--main-text-color);
+    font-size: 20px;
+  }
+  .second-text {
+    color: var(--second-text-color);
+  }
+  .rounded-full {
+    border-radius: 100%;
+  }
+  .nav-item {
+    margin-left: 1000px;
+  }
+  .sidebar-wrapper {
+    min-height: auto;
+    margin-left: -15rem;
+    transition: margin 0.25s ease-out;
+  }
+  
+  .sidebar-wrapper .sidebar-heading {
+    padding: 0.875rem 1.25rem;
+    font-size: 1.2rem;
+  }
+  
+  .sidebar-wrapper .list-group {
+    width: 15rem;
+  }
+  
+  .list-group-item {
+    border: none;
+    padding: 20px 30px;
+  }
+  
+  .list-group-item:hover,
+  .list-group-item.active {
+    background-color: transparent;
+    color: #5B1726;
+    font-weight: bold;
+    border: none;
+  }
+  
+  .sidebar-heading img {
+    width: 150px; 
+    height: max-content; 
+    object-fit: contain; 
+    align-items: center;
+  }
+  
+  
+  @media (max-width: 768px) {
+    .sidebar-wrapper {
+      margin-left: -15rem;
+    }
+  
+    .wrapper.toggled #sidebar-wrapper {
+      margin-left: 0;
+    }
+  }
+  
+  .custom-card {
+    background-color: #5B1726;
+    color: white;
+    margin: 20px auto;  
+    width: 250px;  
+    height: 150px; 
+  }
+  
+  .custom-card:hover {
+    background-color: #7c283a;
+    color: white;
+    margin: 20px auto; 
+    width: 250px;  
+    height: 150px; 
+    border: 2px solid white;
+  }
+  
+  .custom-select-box {
+    display: inline-block;
+    position: relative;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 6px 12px;
+    width: 150px;
+  }
+  
+  .custom-select-box::after {
+    content: '\25BC';
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  
+  .custom-select-box select {
+    width: 100%;
+    appearance: none;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+  }
+  
+  .custom-select-box select:focus +::after {
+    color: blue;
+  }
+  
+  
+    .form-control.input-lg {
+      width: 100%;
+      height: 150px;
+      padding: 12px;
+      font-size: 18px;
+      line-height: 1.3333333;
+    }
+  
+    /* Add this CSS to your existing styles or create a new CSS file */
+ #imageContainer {
+            position: relative;
+            text-align: center;
+        }
+
+        #imageContainer img.profilePicture {
+            width: 150px; 
+      height: auto; 
+      object-fit: contain; 
+      align-items: center;   /* Adjust the height as needed */
+            transform: translateX(-50%);
+        }
+
+        #img {
+            margin-top: 20px;
+ width: 150px; 
+      height: auto; 
+      object-fit: contain; 
+      align-items: center;             /* Adjust the margin as needed */
+        }
+
+        /* Style for the buttons in a single line */
+        #buttonContainer {
+            display: inline-flex;
+            margin-top: 20px; /* Adjust the margin as needed */
+        }
+
+        #submitButton,
+        #removeButton {
+            width: 20%; /* Adjust the width as needed */
+        }
+ 
+        .user {
+            width: 90%;
+            max-width: 340px;
+            margin: 10vh auto;
+        }
+
+        .user__header {
+            text-align: center;
+            transform: translate3d(0, 500px, 0);
+            animation: arrive 500ms ease-in-out 0.7s forwards;
+        }
+
+        .user__title {
+            font-size: 30px;
+            font-weight: 500;
+            color: white;
+        }
+
+  /* Responsive Styles */
+  @media (min-width: 768px) {
+    .sidebar-wrapper {
+        margin-left: 0;
+    }
+  
+    .page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
+  
+    .wrapper.toggled #sidebar-wrapper {
+        margin-left: -15rem;
+    }
+  }
+  
+  
+  /*Profile*/
+                                  
+  
+  
+  .container {
+    max-width: 100%;
+  
+    padding: auto 20px;
+  
+  }
+  
+  h1.text-center {
+    margin-bottom: 0;
+  }
+  
+  .cta{
+    margin-top: 10px; /* Add margin at the top of cta */
+    padding: 10px 25px;
+    background: #800000;
+    border-radius: 30px;
+    color: whitesmoke;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+    
+  }
