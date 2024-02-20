@@ -29,7 +29,7 @@ This is an Art Gallery Management System designed to facilitate the management o
 
 ## Setup Instructions
 
-1. Clone the repository: `git clone https://github.com/malaika-s_27/art-gallery-management.git`
+1. Clone the repository: `git clone https://github.com/malaika-s27/art-gallery-management.git`
 2. Install dependencies: `npm install`
 3. Set up environment variables for database connection and other configurations.
 4. Run the application: `npm start`
